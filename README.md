@@ -1,9 +1,9 @@
-# dabble-wave
+# dabble-scoregoat
 
 
 // Brand Elements<br>
-Primary: #57BBBF<br>
-Secondary: #005596<br>
+Primary: #00335C<br>
+Secondary: #07D2E8<br>
 Font: Montserrat<br>
 <br>
 
@@ -12,4 +12,4 @@ Compiled Files Location: www > dist
 
 // App:<br>
 Compiled Files Location: app > dist<br>
-- Pages to use: dash, dash2, user, org
+- Pages to use: 

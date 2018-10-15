@@ -118,7 +118,7 @@
                         .m-form__group {
                             margin: 0;
                             padding: 0;                   
-                            margin: 0 auto;
+                            margin: 0 auto;                                   
 
                             .form-control {                        
                                 border-radius: 40px;
@@ -137,7 +137,7 @@
                                                                     
                                 &.m-login__form-input--last {
                                     border: 0;
-                                }                            
+                                }  
                             }                     
                         }                       
                     } 
@@ -161,6 +161,14 @@
                             .btn {
                                 padding: 1.3rem 3.43rem;
                             }                                                 
+                        }
+
+                        &.m-login__action--fit {
+                            > a {                             
+                                &:first-child {
+                                    margin-left: 0rem;
+                                }
+                            }
                         }
                     }
 

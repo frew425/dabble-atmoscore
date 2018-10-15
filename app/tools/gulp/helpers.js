@@ -8,18 +8,17 @@ var concat = require('gulp-concat');
 var lazypipe = require('lazypipe');
 var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify-es').default;
-var cleancss = require('gulp-clean-css');
 var sourcemaps = require('gulp-sourcemaps');
 var build = require('./build');
 var path = require('path');
-var gutil = require('gulp-util');
 var fs = require('fs');
 var filter = require('gulp-filter');
 var autoprefixer = require('gulp-autoprefixer');
 var rtlcss = require('gulp-rtlcss');
+var yargs = require('yargs');
 
 // merge with default parameters
-var args = Object.assign({'prod': false}, gutil.env);
+var args = Object.assign({'prod': false}, yargs.argv);
 
 if (args.prod !== false) {
 	// force disable debug for production
@@ -42,7 +41,7 @@ module.exports = {
 		},
 	}, build.config),
 
-	rootPath: './../',
+	rootPath: './../theme/',
 
 	demoPath: 'src/js/demo',
 
@@ -55,7 +54,7 @@ module.exports = {
 	 * @param userdata
 	 * @returns {boolean}
 	 */
-	objectWalkRecursive: function (array, funcname, userdata) {
+	objectWalkRecursive: function(array, funcname, userdata) {
 		if (!array || typeof array !== 'object') {
 			return false;
 		}
@@ -77,10 +76,12 @@ module.exports = {
 			try {
 				if (arguments.length > 2) {
 					funcname(array[key], key, userdata);
-				} else {
+				}
+				else {
 					funcname(array[key], key);
 				}
-			} catch (e) {
+			}
+			catch (e) {
 				return false;
 			}
 		}
@@ -90,13 +91,13 @@ module.exports = {
 	/**
 	 * Add JS compilation options to gulp pipe
 	 */
-	jsChannel: function () {
+	jsChannel: function() {
 		var config = this.config.compile;
-		return lazypipe().pipe(function () {
+		return lazypipe().pipe(function() {
 			return gulpif(config.jsSourcemaps, sourcemaps.init({loadMaps: true, debug: config.debug}));
-		}).pipe(function () {
+		}).pipe(function() {
 			return gulpif(config.jsUglify, uglify());
-		}).pipe(function () {
+		}).pipe(function() {
 			return gulpif(config.jsSourcemaps, sourcemaps.write('./'));
 		});
 	},
@@ -104,26 +105,28 @@ module.exports = {
 	/**
 	 * Add CSS compilation options to gulp pipe
 	 */
-	cssChannel: function () {
+	cssChannel: function(rtl) {
 		var config = this.config.compile;
-		var includePaths = module.exports.includePaths.map(function (path) {
+		var includePaths = module.exports.includePaths.map(function(path) {
 			return module.exports.rootPath + path;
 		});
-		return lazypipe().pipe(function () {
+		return lazypipe().pipe(function() {
 			return gulpif(config.cssSourcemaps, sourcemaps.init({loadMaps: true, debug: config.debug}));
-		}).pipe(function () {
+		}).pipe(function() {
 			return sass({
 				errLogToConsole: true,
 				includePaths: includePaths,
+				outputStyle: config.cssMinify ? 'compressed' : '',
 			}).on('error', sass.logError);
-		}).pipe(function () {
-			return gulpif(config.cssMinify, cleancss({debug: config.debug}));
-		}).pipe(function () {
+		}).pipe(function() {
+			// convert rtl for style.bundle.css only here, others already converted before
+			return gulpif(rtl, rtlcss());
+		}).pipe(function() {
 			return gulpif(true, autoprefixer({
 				browsers: ['last 2 versions'],
-				cascade: false
+				cascade: false,
 			}));
-		}).pipe(function () {
+		}).pipe(function() {
 			return gulpif(config.cssSourcemaps, sourcemaps.write('./'));
 		});
 	},
@@ -134,39 +137,44 @@ module.exports = {
 	 * @param outputFile
 	 * @returns {*}
 	 */
-	outputChannel: function (path, outputFile) {
-		if (typeof outputFile === 'undefined') outputFile = '';
+	outputChannel: function(path, outputFile) {
+		if (typeof path === 'undefined') {
+			console.log('Output path not defined');
+		}
+		if (typeof outputFile === 'undefined') {
+			outputFile = '';
+		}
 		var piping = lazypipe();
 
-		var excludedFiles = [];
 		var regex = new RegExp(/\{\$.*?\}/);
 		var matched = path.match(regex);
 		if (matched) {
 			var outputs = build.config.dist;
-			outputs.forEach(function (output) {
+			outputs.forEach(function(output) {
 				if (output.indexOf('/**/') !== -1) {
-					module.exports.getDemos().forEach(function (demo) {
+					module.exports.getDemos().forEach(function(demo) {
 						var outputPath = path.replace(matched[0], output.replace('**', demo)).replace(outputFile, '');
 						var f = filter(outputPath, {restore: true});
 						// exclude unrelated demo assets
 						if (outputPath.indexOf('/assets/demo/') !== -1 && outputPath.indexOf('/assets/demo/' + demo) === -1) {
-							piping = piping.pipe(function () {
+							piping = piping.pipe(function() {
 								return f;
 							});
 						}
-						(function (_output) {
-							piping = piping.pipe(function () {
+						(function(_output) {
+							piping = piping.pipe(function() {
 								return gulp.dest(_output);
 							});
 						})(outputPath);
-						piping = piping.pipe(function () {
+						piping = piping.pipe(function() {
 							return f.restore;
 						});
 					});
-				} else {
+				}
+				else {
 					var outputPath = path.replace(matched[0], output).replace(outputFile, '');
-					(function (_output) {
-						piping = piping.pipe(function () {
+					(function(_output) {
+						piping = piping.pipe(function() {
 							return gulp.dest(_output);
 						});
 					})(outputPath);
@@ -182,11 +190,11 @@ module.exports = {
 	 * @param path
 	 * @returns {*}
 	 */
-	dotPath: function (path) {
+	dotPath: function(path) {
 		var regex = new RegExp(/\{\$(.*?)\}/),
-			dot = function (obj, i) {
-				return obj[i];
-			};
+				dot = function(obj, i) {
+					return obj[i];
+				};
 		var matched = path.match(regex);
 		if (matched) {
 			var realpath = matched[1].split('.').reduce(dot, build);
@@ -200,8 +208,8 @@ module.exports = {
 	 * Convert multiple paths
 	 * @param paths
 	 */
-	dotPaths: function (paths) {
-		paths.forEach(function (path, i) {
+	dotPaths: function(paths) {
+		paths.forEach(function(path, i) {
 			paths[i] = module.exports.dotPath(path);
 		});
 	},
@@ -210,17 +218,17 @@ module.exports = {
 	 * Css path rewriter when bundle files moved
 	 * @param folder
 	 */
-	cssRewriter: function (folder) {
+	cssRewriter: function(folder) {
 		var imgRegex = new RegExp(/\.(gif|jpg|jpeg|tiff|png|ico)$/i);
 		var fontRegex = new RegExp(/\.(otf|eot|svg|ttf|woff|woff2)$/i);
 		var config = this.config;
 
-		return lazypipe().pipe(function () {
+		return lazypipe().pipe(function() {
 			// rewrite css relative path
 			return rewrite({
 				destination: folder,
 				debug: config.debug,
-				adaptPath: function (ctx) {
+				adaptPath: function(ctx) {
 					var isCss = ctx.sourceFile.match(/\.[css]+$/i);
 					// process css only
 					if (isCss[0] === '.css') {
@@ -250,7 +258,7 @@ module.exports = {
 	 * @param path
 	 * @returns {string}
 	 */
-	baseFileName: function (path) {
+	baseFileName: function(path) {
 		var maybeFile = path.split('/').pop();
 		if (maybeFile.indexOf('.') !== -1) {
 			return maybeFile;
@@ -258,17 +266,18 @@ module.exports = {
 		return '';
 	},
 
-	baseName: function (str) {
+	baseName: function(str) {
 		var base = new String(str).substring(str.lastIndexOf('/') + 1);
-		if (base.lastIndexOf('.') != -1)
-			base = base.substring(0, base.lastIndexOf("."));
+		if (base.lastIndexOf('.') != -1) {
+			base = base.substring(0, base.lastIndexOf('.'));
+		}
 		return base;
 	},
 
 	/**
 	 * Remove file name and get the path
 	 */
-	pathOnly: function (str) {
+	pathOnly: function(str) {
 		var array = str.split('/');
 		if (array.length > 0) {
 			array.pop();
@@ -280,28 +289,34 @@ module.exports = {
 	 * Bundle
 	 * @param bundle
 	 */
-	bundle: function (bundle) {
+	bundle: function(bundle) {
 		var _self = this;
 		var tasks = [];
 
-		if (typeof bundle.src !== 'undefined' && typeof bundle.bundle !== 'undefined') {
+		if (bundle.hasOwnProperty('src') && bundle.hasOwnProperty('bundle')) {
 
 			// for images & fonts as per vendor
 			if ('mandatory' in bundle.src && 'optional' in bundle.src) {
 				var vendors = {};
 
 				for (var key in bundle.src) {
-					if (!bundle.src.hasOwnProperty(key)) continue;
+					if (!bundle.src.hasOwnProperty(key)) {
+						continue;
+					}
 					vendors = Object.assign(vendors, bundle.src[key]);
 				}
 
 				for (var vendor in vendors) {
-					if (!vendors.hasOwnProperty(vendor)) continue;
+					if (!vendors.hasOwnProperty(vendor)) {
+						continue;
+					}
 
 					var vendorObj = vendors[vendor];
 
 					for (var type in vendorObj) {
-						if (!vendorObj.hasOwnProperty(type)) continue;
+						if (!vendorObj.hasOwnProperty(type)) {
+							continue;
+						}
 
 						_self.dotPaths(vendorObj[type]);
 
@@ -320,7 +335,7 @@ module.exports = {
 			// flattening array
 			if (!('styles' in bundle.src) && !('scripts' in bundle.src)) {
 				var src = {styles: [], scripts: []};
-				_self.objectWalkRecursive(bundle.src, function (paths, type) {
+				_self.objectWalkRecursive(bundle.src, function(paths, type) {
 					switch (type) {
 						case 'styles':
 						case 'scripts':
@@ -338,49 +353,73 @@ module.exports = {
 			}
 
 			for (var type in bundle.src) {
-				if (!bundle.src.hasOwnProperty(type)) continue;
+				if (!bundle.src.hasOwnProperty(type)) {
+					continue;
+				}
 				// skip if not array
-				if (Object.prototype.toString.call(bundle.src[type]) !== '[object Array]') continue;
+				if (Object.prototype.toString.call(bundle.src[type]) !== '[object Array]') {
+					continue;
+				}
 				// skip if no bundle output is provided
-				if (typeof bundle.bundle[type] === 'undefined') continue;
+				if (typeof bundle.bundle[type] === 'undefined') {
+					continue;
+				}
 
 				_self.dotPaths(bundle.src[type]);
 				var outputFile = _self.baseFileName(bundle.bundle[type]);
 
 				switch (type) {
 					case 'styles':
-						// rtl css bundle
-						if (build.config.compile.rtl.enabled) {
-							var toRtlFiles = [];
-							var rtlFiles = [];
-							bundle.src[type].forEach(function (path) {
-								// get rtl css file path
-								var cssFile = _self.pathOnly(path) + '/' + _self.baseName(path) + '.rtl.css';
-								// check if rtl file is exist
-								if (fs.existsSync(cssFile) && build.config.compile.rtl.skip.indexOf(_self.baseName(path)) === -1) {
-									rtlFiles = rtlFiles.concat(cssFile);
-								} else {
-									// rtl css file not exist, use default css file
-									cssFile = path;
+						if (bundle.bundle.hasOwnProperty(type)) {
+							// rtl css bundle
+							if ((/true/i).test(build.config.compile.rtl.enabled)) {
+								var toRtlFiles = [];
+								var rtlFiles = [];
+								bundle.src[type].forEach(function(path) {
+									// get rtl css file path
+									var cssFile = _self.pathOnly(path) + '/' + _self.baseName(path) + '.rtl.css';
+									// check if rtl file is exist
+									if (fs.existsSync(cssFile) && build.config.compile.rtl.skip.indexOf(_self.baseName(path)) === -1) {
+										rtlFiles = rtlFiles.concat(cssFile);
+									}
+									else {
+										// rtl css file not exist, use default css file
+										cssFile = path;
+									}
+									toRtlFiles = toRtlFiles.concat(cssFile);
+								});
+
+								var shouldRtl = false;
+								if (_self.baseName(bundle.bundle[type]) === 'style.bundle') {
+									shouldRtl = true;
 								}
-								toRtlFiles = toRtlFiles.concat(cssFile);
-							});
+								var rtlOutput = _self.pathOnly(bundle.bundle[type]) + '/' + _self.baseName(bundle.bundle[type]) + '.rtl.css';
+								gulp.src(toRtlFiles).
+										pipe(_self.cssRewriter(bundle.bundle[type])()).
+										pipe(concat(_self.baseName(bundle.bundle[type]) + '.rtl.css')).
+										pipe(_self.cssChannel(shouldRtl)()).
+										pipe(_self.outputChannel(rtlOutput, _self.baseName(bundle.bundle[type]) + '.rtl.css')());
+							}
 
-							var rtlOutput = _self.pathOnly(bundle.bundle[type]) + '/' + _self.baseName(bundle.bundle[type]) + '.rtl.css';
-							gulp.src(toRtlFiles).pipe(_self.cssRewriter(bundle.bundle[type])()).pipe(concat(_self.baseName(bundle.bundle[type]) + '.rtl.css')).pipe(_self.cssChannel()()).// convert rtl for style.bundle.css only here, others already converted before
-							pipe(gulpif(_self.baseName(bundle.bundle[type]) === 'style.bundle', rtlcss())).pipe(_self.outputChannel(rtlOutput, _self.baseName(bundle.bundle[type]) + '.rtl.css')());
+							// default css bundle
+							gulp.src(bundle.src[type]).
+									pipe(_self.cssRewriter(bundle.bundle[type])()).
+									pipe(concat(outputFile)).
+									pipe(_self.cssChannel()()).
+									pipe(_self.outputChannel(bundle.bundle[type], outputFile)());
 						}
-
-						// default css bundle
-						gulp.src(bundle.src[type]).pipe(_self.cssRewriter(bundle.bundle[type])()).pipe(concat(outputFile)).pipe(_self.cssChannel()()).pipe(_self.outputChannel(bundle.bundle[type], outputFile)());
 						break;
 
 					case 'scripts':
-						gulp.src(bundle.src[type]).pipe(concat(outputFile)).pipe(_self.jsChannel()()).pipe(_self.outputChannel(bundle.bundle[type], outputFile)());
+						if (bundle.bundle.hasOwnProperty(type)) {
+							gulp.src(bundle.src[type]).pipe(concat(outputFile)).pipe(_self.jsChannel()()).pipe(_self.outputChannel(bundle.bundle[type], outputFile)());
+						}
 						break;
 
 					case 'images':
-						gulp.src(bundle.src[type]).pipe(_self.outputChannel(bundle.bundle[type])());
+						if (bundle.bundle.hasOwnProperty(type)) {
+							gulp.src(bundle.src[type]).pipe(_self.outputChannel(bundle.bundle[type])());
+						}
 						break;
 
 					default:
@@ -395,21 +434,27 @@ module.exports = {
 	 * Copy source to output destination
 	 * @param bundle
 	 */
-	output: function (bundle) {
+	output: function(bundle) {
 		var _self = this;
 
-		if (typeof bundle.src !== 'undefined' && typeof bundle.output !== 'undefined') {
+		if (bundle.hasOwnProperty('src') && bundle.hasOwnProperty('output')) {
 			for (var type in bundle.src) {
-				if (!bundle.src.hasOwnProperty(type)) continue;
+				if (!bundle.src.hasOwnProperty(type)) {
+					continue;
+				}
 
 				_self.dotPaths(bundle.src[type]);
 
 				switch (type) {
 					case 'styles':
-						gulp.src(bundle.src[type]).pipe(_self.cssChannel()()).pipe(_self.outputChannel(bundle.output[type])());
+						if (bundle.output.hasOwnProperty(type)) {
+							gulp.src(bundle.src[type]).pipe(_self.cssChannel()()).pipe(_self.outputChannel(bundle.output[type])());
+						}
 						break;
 					case 'scripts':
-						gulp.src(bundle.src[type]).pipe(_self.jsChannel()()).pipe(_self.outputChannel(bundle.output[type])());
+						if (bundle.output.hasOwnProperty(type)) {
+							gulp.src(bundle.src[type]).pipe(_self.jsChannel()()).pipe(_self.outputChannel(bundle.output[type])());
+						}
 						break;
 					default:
 						gulp.src(bundle.src[type]).pipe(_self.outputChannel(bundle.output[type])());
@@ -419,7 +464,7 @@ module.exports = {
 		}
 	},
 
-	getDemos: function () {
+	getDemos: function() {
 		var demos = Object.keys(build.build.demo);
 		// var demos = this.getFolders(module.exports.rootPath + module.exports.demoPath);
 		// build by demo, leave demo empty to generate all demos
@@ -429,8 +474,8 @@ module.exports = {
 		return demos;
 	},
 
-	getFolders: function (dir) {
-		return fs.readdirSync(dir).filter(function (file) {
+	getFolders: function(dir) {
+		return fs.readdirSync(dir).filter(function(file) {
 			return fs.statSync(path.join(dir, file)).isDirectory();
 		});
 	},

@@ -91,6 +91,10 @@
                     @include m-component--dropdown--set-arrow-color( array-get($layout, default, nav, dropdown, notifications, bg-color) );
                 }
 
+                &.m-topbar__languages.m-dropdown--header-bg-fill {
+                    @include m-component--dropdown--set-arrow-color( array-get($layout, default, nav, dropdown, languages, bg-color) );
+                }
+
                 &.m-topbar__quick-actions.m-topbar__quick-actions--img {
                     @include m-component--dropdown--set-arrow-color( array-get($layout, default, nav, dropdown, quick-actions, bg-color) );
                 }
@@ -103,6 +107,24 @@
                 &.m-dropdown.m-dropdown--offcanvas.m-dropdown--header-bg-fil.m-dropdown--arrow { 
                     @include m-component--dropdown--set-arrow-color(array-get($layout, default, self, bg-color), bottom); 
                 }
+
+                // Languages
+                &.m-topbar__languages {
+                    .m-topbar__language-selected-img {
+                        width: 26px;
+                        border-radius: 50% !important;
+                    }
+
+                    .m-nav__item {
+                        .m-topbar__language-img {
+                            width: 22px;
+                            border-radius: 50% !important;
+                        }
+
+                        .m-topbar__language-text {
+                        }
+                    }                    
+                }                 
             }
         }
     }

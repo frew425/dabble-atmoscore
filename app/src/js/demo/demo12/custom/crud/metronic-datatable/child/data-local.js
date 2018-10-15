@@ -440,7 +440,7 @@ var DatatableChildDataLocalDemo = function() {
       data: {
         type: 'local',
         source: dataJSONArray,
-        pageSize: 10, // display 20 records per page
+        pageSize: 10,
       },
 
       // layout definition

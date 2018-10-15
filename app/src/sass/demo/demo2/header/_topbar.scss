@@ -138,6 +138,25 @@
                 &.m-topbar__user-profile.m-topbar__user-profile--img {
                     @include m-component--dropdown--set-arrow-color( array-get($layout, default, nav, dropdown, user-profile, bg-color) );
                 }
+
+                // Languages
+                &.m-topbar__languages {
+                    .m-topbar__language-selected-img {
+                        width: 26px;
+                        border-radius: 50% !important;
+                        margin: 0 20px 0 10px;
+                    }
+
+                    .m-nav__item {
+                        .m-topbar__language-img {
+                            width: 22px;
+                            border-radius: 50% !important;
+                        }
+
+                        .m-topbar__language-text {
+                        }
+                    }
+                }
             }
         }
     }

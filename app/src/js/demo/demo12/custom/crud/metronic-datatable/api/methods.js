@@ -15,7 +15,7 @@ var DefaultDatatableDemo = function() {
 						url: 'inc/api/datatables/demos/default.php',
 					},
 				},
-				pageSize: 20, // display 20 records per page
+				pageSize: 20,
 				serverPaging: true,
 				serverFiltering: true,
 				serverSorting: true,

@@ -11,74 +11,14 @@ $m--root-font: (
         desktop: 13px,
         tablet: 13px,
         mobile: 13px
-    ),
-    weight: 300,
+    ), 
+    weight: 300, 
     color: (
-        light: #333333,
+        light: #333333, 
         dark: #efefef
     )
 );
 */
 
-$m--brand-color: #57BBBF;
+$m--brand-color: #22b9ff;
 $m--brand-inverse-color: #ffffff;
-
-@media (min-width: 1025px) {
-.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link {
-    background-color: #f1f2f7 !important;
-}
-}
-
-.m-widget27 .m-widget27__pic > img {
-    width: 100%;
-    height: 300px !important;
-}
-
-.m-portlet.hours .m-portlet__body {
-    padding: 0 !important;
-}
-
-.m-widget27 .m-widget27__pic .m-widget27__title {
-    top: 55% !important;
-}
-
-.m-portlet.hours .m-widget27 .m-widget27__pic:before {
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%, #005596 ), color-stop(100%, #57BBBF )) !important;
-    background: linear-gradient(-45deg, #005596 0%, #57BBBF 100%) !important;
-    opacity: .6;
-}
-
-.m-widget5 .m-widget5__item:last-child {
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-.m-widget4 .m-widget4__item .m-widget4__img.m-widget4__img--logo img {
-    border-radius: 0px !important;
-}
-
-.m-card-profile .m-card-profile__pic img.user {
-    max-width: 200px !important;
-    width: 200px !important;
-    object-fit: cover;
-    height: 200px !important;
-}
-
-.m-card-profile .m-card-profile__pic .m-card-profile__pic-wrapper {
-    padding: 4px !important;
-    background-image: -webkit-linear-gradient(linear, left top, right top, color-stop(0%, #005596 ), color-stop(100%, #57BBBF )) !important;
-    background-image: -moz-linear-gradient(-45deg, #005596 0%, #57BBBF 100%) !important;
-    background-image: -o-linear-gradient(-45deg, #005596 0%, #57BBBF 100%) !important;
-    background-image: linear-gradient(-45deg, #005596 0%, #57BBBF 100%) !important;
-}
-
-.m-card-user .m-card-user__pic img {
-    object-fit: cover;
-    height: 70px !important;
-}
-
-.m-nav__link-icon img {
-    object-fit: cover;
-    height: 35px !important;
-    width: 35px !important;
-}

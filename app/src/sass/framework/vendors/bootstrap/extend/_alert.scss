@@ -177,7 +177,7 @@
                         }
 
                         span {
-                            @include m--set-classic-arrow-bg( left, array-get($color, base));  
+                            @include m--set-classic-arrow-bg( left, array-get($color, base));
                         }
                     }
                 }

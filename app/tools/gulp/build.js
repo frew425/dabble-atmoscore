@@ -1,15 +1,42 @@
-var gutil = require('gulp-util');
+var yargs = require('yargs');
+var fs = require('fs');
+
+var release = true;
 
 // merge with default parameters
-var args = Object.assign({'prod': false, default: true, 'angular-jquery': false, 'angular-native': false}, gutil.env);
+var args = Object.assign({
+  'prod': false,
+  'metronic': false,
+  'keen': false,
+  'default': false,
+  'angular': false,
+}, yargs.argv);
 
-var configs = {default: './../conf/default.json', 'angular-jquery': './../conf/angular-jquery.json', 'angular-native': './../conf/angular-native.json'};
-var config = configs.default;
-// angular flag true or path name has angular
-if (args['angular'] || process.cwd().indexOf('angular') !== -1) {
-  config = configs['angular-jquery'];
+var theme = 'metronic';
+var package = 'default';
+var confPath = '';
+
+if (release) {
+  ['default', 'angular'].forEach(function(p) {
+    if (args[p]) {
+      package = p;
+    }
+  });
+  confPath = './../themes/' + package + '.conf.json';
+
+} else {
+  ['metronic', 'keen'].forEach(function(t) {
+    if (args[t]) {
+      theme = t;
+    }
+    ['default', 'angular'].forEach(function(p) {
+      if (args[p]) {
+        package = p;
+      }
+    });
+  });
+  confPath = './../themes/' + theme + '/' + package + '.conf.json';
 }
-if (args['angular-native'] || process.cwd().indexOf('angular-native') !== -1) {
-  config = configs['angular-native'];
-}
-module.exports = require(config);
+
+console.log('Using config ' + confPath);
+module.exports = require(confPath);

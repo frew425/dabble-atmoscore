@@ -306,7 +306,7 @@ var mWizard = function(elementId, options) {
 
             //== Update progress
             if (mUtil.hasClass(element, 'm-wizard--1')) {
-                var width = 100 * ((the.currentStep) / (the.totalSteps));
+                var width = 100 * ((the.currentStep - 1) / (the.totalSteps));
                 var number = mUtil.find(element, '.m-wizard__step-number');
                 var offset = parseInt(mUtil.css(number, 'width'));
                 mUtil.css(the.progress, 'width', 'calc(' + width + '% + ' + (offset / 2) + 'px)');

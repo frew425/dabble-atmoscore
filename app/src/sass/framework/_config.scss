@@ -73,7 +73,7 @@ $m--transition: (
 )!default;
 
 //== UI State Colors
-$m--brand-color: #716aca !default;
+$m--brand-color: #07D2E8 !default;
 $m--brand-inverse-color: #ffffff !default;
 
 $m--state-colors: (
@@ -101,7 +101,7 @@ $m--state-colors: (
 
     // bootstrap states
     primary: (
-        base: #57BBBF,
+        base: #5867dd,
         inverse: #ffffff
     ),
     success: (
@@ -139,7 +139,7 @@ $m--root-font: (
 //== Font families
 $m--font-families: (
     regular: 'Poppins',
-    heading: 'Montserrat'
+    heading: 'Roboto'
 )!default;
 
 //== General link font settings

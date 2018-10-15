@@ -105,6 +105,14 @@ var mQuicksearch = function(elementId, options) {
             // attach input keyup handler
             mUtil.addEvent(the.input, 'keyup', Plugin.search);
 
+            // Prevent enter click
+            mUtil.find(element, "form").onkeypress = function(e) {
+                var key = e.charCode || e.keyCode || 0;     
+                if (key == 13) {
+                    e.preventDefault();
+                }
+            }
+
             if (the.options.mode == 'default') {
                 mUtil.addEvent(the.input, 'focus', Plugin.showDropdown);
                 mUtil.addEvent(the.iconCancel, 'click', Plugin.handleCancel);

@@ -541,7 +541,7 @@ var mUtil = function() {
         },
 
         removeClass: function(el, className) {
-            if (!el) {
+            if (!el || typeof className === 'undefined') {
                 return;
             }
 
@@ -592,11 +592,17 @@ var mUtil = function() {
         },
 
         find: function(parent, query) {
-            return parent.querySelector(query);
+            parent = mUtil.get(parent);
+            if (parent) {
+                return parent.querySelector(query);
+            }            
         },
 
         findAll: function(parent, query) {
-            return parent.querySelectorAll(query);
+            parent = mUtil.get(parent);
+            if (parent) {
+                return parent.querySelectorAll(query);
+            } 
         },
 
         insertAfter: function(el, referenceNode) {
@@ -1284,7 +1290,7 @@ var mUtil = function() {
                         swipeEasing: true,
                         wheelPropagation: false,
                         minScrollbarLength: 40,
-                        suppressScrollX: true
+                        suppressScrollX: mUtil.isRTL() ? false : true
                     });
 
                     mUtil.data(element).set('ps', ps);
@@ -1305,7 +1311,6 @@ var mUtil = function() {
         scrollerUpdate: function(element) {
             var ps;
             if (ps = mUtil.data(element).get('ps')) {
-                console.log('update!');
                 ps.update();
             }
         },

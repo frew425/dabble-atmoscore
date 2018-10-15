@@ -15,7 +15,7 @@ var DatatableChildRemoteDataDemo = function() {
             url: 'inc/api/datatables/demos/customers.php',
           },
         },
-        pageSize: 10, // display 20 records per page
+        pageSize: 10,
         serverPaging: true,
         serverFiltering: false,
         serverSorting: true,

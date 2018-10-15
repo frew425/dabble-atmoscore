@@ -1,6 +1,7 @@
 //== Set defaults
-swal.mixin({
+swal.setDefaults({
 	width: 400,
+	heightAuto: false,
 	padding: '2.5rem',
 	buttonsStyling: false,
 	confirmButtonClass: 'btn btn-success m-btn m-btn--custom',

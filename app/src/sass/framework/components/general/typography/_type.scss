@@ -8,7 +8,7 @@
     	@include flexbox-inline();
     	@include flexbox-align-items(center);
     	@include flexbox-justify-content(center);
-        @inclide flexbox-grow(0);
+        @include flexbox-grow(0);
 
     	height: 40px;
         width: 40px;
