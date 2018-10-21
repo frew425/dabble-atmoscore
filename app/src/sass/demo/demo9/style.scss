@@ -54,3 +54,13 @@
 @import "subheader/default";
 
 @import "footer/default";
+
+
+//== CUSTOM DABBLE STYLES
+.m-brand--desktop img {
+    max-width: 300px;
+}
+
+.m-brand--mobile img {
+    max-width: 250px;
+}
