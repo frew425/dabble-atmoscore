@@ -16,12 +16,12 @@
 			display: inline-block;
 			padding: 7px 25px 7px 0;
 			font-family: #{get-heading-font-family()};
-			font-weight: 300;			
-			font-size: 1.55rem;
+			font-weight: 400 !important;			
+			font-size: 2rem;
 			font-weight: get-font-weight(bolder);
 			vertical-align: middle;
 			margin: 0 15px 0 0;
-			color: get-color($skin, regular, '+');
+			color: #00335C;
 
 			&.m-subheader__title--separator {
 				border-right: 1px solid get-color($skin, panel, '+');

@@ -32,7 +32,7 @@
 @import "header/_config";
 @import "aside/_config";
 @import "menu-header/_config";
-@import "menu-aside/_config";   
+@import "menu-aside/_config";
 @import "footer/_config";
 
 //== 7: Demo Layout
@@ -60,7 +60,44 @@
 .m-brand--desktop img {
     max-width: 300px;
 }
-
 .m-brand--mobile img {
     max-width: 250px;
+}
+.m-portlet.m-portlet--bordered-semi.m-portlet--full-height.m-portlet--rounded-force:hover {
+    box-shadow: 0px 5px 30px 0px rgba(45, 35, 66, 0.15);
+}
+.m-portlet {
+transition: all .3s ease;
+}
+.m-widget19 .m-widget19__content .m-widget19__header .m-widget19__info .m-widget19__org-name {
+       display: inline-block;
+       margin-bottom: 1.4rem;
+       font-size: 1rem;
+       font-weight: 500;
+}
+     .m-widget19 .m-widget19__content .m-widget19__header .m-widget19__info .m-widget19__event-location {
+       display: inline-block;
+       font-size: 0.85rem;
+}
+.m-widget19 .m-widget19__pic > img {
+  max-width: 100%!important;
+  width: 100%!important;
+  -o-object-fit: cover;
+  object-fit: cover;
+  min-height: 250px!important;
+}
+@media (min-width: 1025px) {
+  .m-header-menu {
+    margin: 0 auto;
+  }
+}
+.m-portlet.m-portlet--bordered-semi .m-portlet__body {
+  padding-bottom: 0px
+}
+.m-widget19 .m-widget19__pic .m-widget19__shadow {
+    /* background: -webkit-gradient(linear, left top, left bottom, color-stop(20%, rgba(0, 0, 0, 0)), color-stop(40%, rgba(0, 0, 0, 0.1)), color-stop(90%, rgba(0, 0, 0, 0.6))) no-repeat scroll 0 0; */
+    background: linear-gradient(to bottom, rgba(0, 51, 92, 0) 10%, rgba(0, 51, 92, 0.1) 40%, rgba(0, 51, 92, .6) 90%) no-repeat scroll 0 0;
+}
+.m-widget19 .m-widget19__pic .m-widget19__shadow {
+    top: 10%;
 }
