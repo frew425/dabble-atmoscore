@@ -39176,3 +39176,6 @@ body.m-content--skin-light2 {
 
 .m-widget19 .m-widget19__pic .m-widget19__shadow {
   top: 10%; }
+
+a.event-card:hover {
+  text-decoration: none; }
