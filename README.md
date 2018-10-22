@@ -7,9 +7,6 @@ Secondary: #07D2E8<br>
 Font: Montserrat<br>
 <br>
 
-// Front Website:<br>
-Compiled Files Location: www > dist
-
-// App:<br>
-Compiled Files Location: app > dist<br>
-- Pages to use: 
+// Final Production Files:<br>
+Compiled Files Location: app > prod<br>
+- Note: not cleaned up yet, all files still in-progress
