@@ -90,6 +90,9 @@ transition: all .3s ease;
   .m-header-menu {
     margin: 0 auto;
   }
+  .m-header-menu .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item {
+      text-align: left;
+  }
 }
 .m-portlet.m-portlet--bordered-semi .m-portlet__body {
   padding-bottom: 0px
